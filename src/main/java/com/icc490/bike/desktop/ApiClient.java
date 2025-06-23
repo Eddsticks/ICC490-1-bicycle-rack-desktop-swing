@@ -35,7 +35,7 @@ public class ApiClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/records"))
                 .GET() // Método HTTP GET
-                .header("Accept", "application/json") // Indica que esperamos una respuesta JSON
+                .header("Accept", "application/json")
                 .build();
 
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())

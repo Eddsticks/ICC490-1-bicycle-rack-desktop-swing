@@ -5,7 +5,6 @@ import com.icc490.bike.desktop.model.RecordRequest;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class SwingApp extends JFrame {
     private ApiClient apiClient;
@@ -188,14 +187,14 @@ public class SwingApp extends JFrame {
                 }
             });
         }).exceptionally(ex -> {
-           SwingUtilities.invokeLater(() -> {
-               JOptionPane.showMessageDialog(this,
-                       "Error al crear registro: " + ex.getMessage() + "\nRevisar consola para más detalles.",
-                       "Error de API",
-                       JOptionPane.ERROR_MESSAGE);
-           });
-           ex.printStackTrace();
-           return null;
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this,
+                        "Error al crear registro: " + ex.getMessage() + "\nRevisar consola para más detalles.",
+                        "Error de API",
+                        JOptionPane.ERROR_MESSAGE);
+            });
+            ex.printStackTrace();
+            return null;
         });
     }
 
