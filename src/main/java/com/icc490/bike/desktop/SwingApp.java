@@ -14,9 +14,23 @@ public class SwingApp extends JFrame {
     private JTextField studentNameField;
     private JTextField bicycleDescriptionField;
 
+    //Colores
+    private static final Color PRIMARY_BLUE = new Color(50,100,160);
+    private static final Color SECONDARY_BLUE = new Color(220,230,200);
+    private static final Color WHITE_TEXT = Color.WHITE;
+    private static final Color DARK_TEXT = Color.BLACK;
+    private static final Color LIGHT_GRAY_BORDER = new Color(200,200,200);
+
     public SwingApp() {
         super("Gestión de Rack de Bicicletas UFRO");
         apiClient = new ApiClient();
+
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            System.err.println("Look and Fell no pudo ser Establecido. Usando predet.");
+        }
+        SwingUtilities.updateComponentTreeUI(this);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700,600);
@@ -28,46 +42,78 @@ public class SwingApp extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        mainPanel.setBackground(Color.WHITE);
 
         //Visualización de registros:
         JPanel displayPanel = new JPanel(new BorderLayout());
         displayPanel.setBorder(BorderFactory.createTitledBorder("Registro de Bicicletas"));
+
         recordDisplayArea = new JTextArea();
         recordDisplayArea.setEditable(false);
         recordDisplayArea.setLineWrap(true);
         recordDisplayArea.setWrapStyleWord(true);
+        recordDisplayArea.setBackground(Color.WHITE);
+        recordDisplayArea.setForeground(DARK_TEXT);
+
         JScrollPane scrollPane = new JScrollPane(recordDisplayArea);
         scrollPane.setPreferredSize(new Dimension(650, 250));
         displayPanel.add(scrollPane, BorderLayout.CENTER);
 
         JButton loadRecordsButton = new JButton("Cargar Registros");
         loadRecordsButton.addActionListener(e ->  loadRecords());
+
+        loadRecordsButton.setBackground(PRIMARY_BLUE);
+        loadRecordsButton.setForeground(WHITE_TEXT);
+        loadRecordsButton.setFocusPainted(false);
         displayPanel.add(loadRecordsButton, BorderLayout.SOUTH);
 
         //Creación de registros:
-        JPanel createPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+        JPanel createPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         createPanel.setBorder(BorderFactory.createTitledBorder("Crear Nuevo Registro"));
+        createPanel.setBackground(Color.WHITE);
+
+        JLabel studentIdLabel = new JLabel("ID Estudiante:");
+        studentIdLabel.setForeground(DARK_TEXT);
+        JLabel studentNameLabel = new JLabel("Nombre Estudiante:");
+        studentNameLabel.setForeground(DARK_TEXT);
+        JLabel bicycleDescriptionLabel = new JLabel("Descripción Bicicleta:");
+        bicycleDescriptionLabel.setForeground(DARK_TEXT);
 
         studentIdField = new JTextField(20);
-        studentNameField = new JTextField(20);
-        bicycleDescriptionField = new JTextField(20);
+        studentIdField.setBackground(Color.WHITE);
+        studentIdField.setForeground(DARK_TEXT);
+        studentIdLabel.setBorder(BorderFactory.createLineBorder(LIGHT_GRAY_BORDER));
 
-        createPanel.add(new JLabel("ID Estudiante:"));
+        studentNameField = new JTextField(20);
+        studentNameField.setBackground(Color.WHITE);
+        studentNameField.setForeground(DARK_TEXT);
+        studentNameField.setBorder(BorderFactory.createLineBorder(LIGHT_GRAY_BORDER));
+
+        bicycleDescriptionField = new JTextField(20);
+        bicycleDescriptionField.setBackground(Color.white);
+        bicycleDescriptionField.setForeground(DARK_TEXT);
+        bicycleDescriptionField.setBorder(BorderFactory.createLineBorder(LIGHT_GRAY_BORDER));
+
+        createPanel.add(studentIdLabel);
         createPanel.add(studentIdField);
-        createPanel.add(new JLabel("Nombre Estudiante:"));
+        createPanel.add(studentNameLabel);
         createPanel.add(studentNameField);
-        createPanel.add(new JLabel("Descripción Bicicleta:"));
+        createPanel.add(bicycleDescriptionLabel);
         createPanel.add(bicycleDescriptionField);
 
         JButton createRecordButton = new JButton("Crear Nuevo Registro");
         createRecordButton.addActionListener(e -> createRecord());
+        createRecordButton.setBackground(PRIMARY_BLUE);
+        createRecordButton.setForeground(WHITE_TEXT);
+        createRecordButton.setFocusPainted(false);
         createPanel.add(createRecordButton);
+        createPanel.add(new JPanel());
 
         //Adiciones panel principal:
         mainPanel.add(displayPanel);
-        mainPanel.add(Box.createVerticalStrut(15));
+        mainPanel.add(Box.createVerticalStrut(20));
         mainPanel.add(new JSeparator());
-        mainPanel.add(Box.createVerticalStrut(15));
+        mainPanel.add(Box.createVerticalStrut(20));
         mainPanel.add(createPanel);
 
         add(mainPanel);
