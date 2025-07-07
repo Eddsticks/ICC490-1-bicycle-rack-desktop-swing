@@ -2,7 +2,7 @@ package com.icc490.bike.desktop;
 
 import com.icc490.bike.desktop.exception.ApiErrorResponse;
 import com.icc490.bike.desktop.exception.ApiException;
-import com.icc490.bike.desktop.gui.utils.AppColors; // Importar la nueva clase de colores
+import com.icc490.bike.desktop.gui.utils.AppColors;
 import com.icc490.bike.desktop.model.Record;
 import com.icc490.bike.desktop.model.RecordPageResponse;
 import com.icc490.bike.desktop.model.RecordRequest;
