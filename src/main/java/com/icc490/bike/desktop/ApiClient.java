@@ -1,5 +1,6 @@
 package com.icc490.bike.desktop;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -24,17 +25,13 @@ public class ApiClient {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    /**
-     * Obtiene todos los registros de bicicletas de la API.
-     * Corresponde al endpoint GET /records
-     * @return Un CompletableFuture que contendrá una lista de objetos Record.
-     */
-    public CompletableFuture<List<Record>> getAllRecords() { // Cambiar List<?> a List<Record>
+    public CompletableFuture<List<Record>> getAllRecords() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/records"))
-                .GET() // Método HTTP GET
+                .GET()
                 .header("Accept", "application/json")
                 .build();
 
@@ -42,9 +39,8 @@ public class ApiClient {
                 .thenApply(HttpResponse::body)
                 .thenApply(json -> {
                     try {
-                        // Ahora deserializamos a RecordPageResponse
                         RecordPageResponse response = objectMapper.readValue(json, RecordPageResponse.class);
-                        return response.getRecords(); // Y extraemos la lista de records
+                        return response.getRecords();
                     } catch (Exception e) {
                         System.err.println("Error al deserializar la lista de registros: " + e.getMessage());
                         e.printStackTrace();
@@ -58,12 +54,6 @@ public class ApiClient {
                 });
     }
 
-    /**
-     * Crea un nuevo registro de bicicleta en la API.
-     * Corresponde al endpoint POST /records
-     * @param recordRequest El objeto RecordRequest con los datos del nuevo registro.
-     * @return Un CompletableFuture que contendrá el objeto Record creado.
-     */
     public CompletableFuture<Record> createRecord(RecordRequest recordRequest) {
         try {
             String requestBody = objectMapper.writeValueAsString(recordRequest);
