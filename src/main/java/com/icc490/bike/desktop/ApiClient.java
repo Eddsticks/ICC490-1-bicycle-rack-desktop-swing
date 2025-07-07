@@ -5,12 +5,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import com.icc490.bike.desktop.model.Record;
 import com.icc490.bike.desktop.model.RecordRequest;
+import com.icc490.bike.desktop.model.RecordPageResponse;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,10 +29,9 @@ public class ApiClient {
     /**
      * Obtiene todos los registros de bicicletas de la API.
      * Corresponde al endpoint GET /records
-     *
      * @return Un CompletableFuture que contendrá una lista de objetos Record.
      */
-    public CompletableFuture<List<Record>> getAllRecords() {
+    public CompletableFuture<List<Record>> getAllRecords() { // Cambiar List<?> a List<Record>
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/records"))
                 .GET() // Método HTTP GET
@@ -43,8 +42,9 @@ public class ApiClient {
                 .thenApply(HttpResponse::body)
                 .thenApply(json -> {
                     try {
-                        Record[] recordsArray = objectMapper.readValue(json, Record[].class);
-                        return Arrays.asList(recordsArray);
+                        // Ahora deserializamos a RecordPageResponse
+                        RecordPageResponse response = objectMapper.readValue(json, RecordPageResponse.class);
+                        return response.getRecords(); // Y extraemos la lista de records
                     } catch (Exception e) {
                         System.err.println("Error al deserializar la lista de registros: " + e.getMessage());
                         e.printStackTrace();
@@ -61,8 +61,8 @@ public class ApiClient {
     /**
      * Crea un nuevo registro de bicicleta en la API.
      * Corresponde al endpoint POST /records
-     * @param recordRequest El objeto RecordRequest con los datos de la bicicleta a registrar.
-     * @return Un CompletableFuture que contendrá el objeto Record creado si la operación fue exitosa.
+     * @param recordRequest El objeto RecordRequest con los datos del nuevo registro.
+     * @return Un CompletableFuture que contendrá el objeto Record creado.
      */
     public CompletableFuture<Record> createRecord(RecordRequest recordRequest) {
         try {
