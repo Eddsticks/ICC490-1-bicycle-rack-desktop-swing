@@ -29,7 +29,7 @@ public class ApiClient {
     }
 
     /**
-     * Método para manejar respuestas HTTP, Checkea errores del API.
+     * Maneja respuestas HTTP, Checkea errores del API.
      */
     private <T> CompletableFuture<T> handleResponse(HttpResponse<String> response, Class<T> valueType) {
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
