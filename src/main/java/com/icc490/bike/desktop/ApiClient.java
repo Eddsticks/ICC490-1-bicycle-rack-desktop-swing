@@ -40,15 +40,15 @@ public class ApiClient {
                 .thenApply(json -> {
                     try {
                         RecordPageResponse response = objectMapper.readValue(json, RecordPageResponse.class);
-                        return response.getRecords();
+                        return response.getRecords(); // Obtener la lista de records
                     } catch (Exception e) {
-                        System.err.println("Error al deserializar la lista de registros: " + e.getMessage());
+                        System.err.println("Error al deserializar la respuesta de registros: " + e.getMessage());
                         e.printStackTrace();
                         return null;
                     }
                 })
                 .exceptionally(ex -> {
-                    System.err.println("Error al obtener registros de la API: " + ex.getMessage());
+                    System.err.println("Error al obtener todos los registros de la API: " + ex.getMessage());
                     ex.printStackTrace();
                     return null;
                 });
