@@ -35,6 +35,7 @@ public class SwingApp extends JFrame implements RecordCreationListener, RecordAc
 
         initUI();
         loadRecords();
+        this.setVisible(true);
     }
 
     private void initUI() {
