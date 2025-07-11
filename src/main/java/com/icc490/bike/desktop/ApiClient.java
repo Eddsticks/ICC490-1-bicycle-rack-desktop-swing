@@ -72,7 +72,7 @@ public class ApiClient {
                         try {
                             Record record = objectMapper.readValue(json, Record.class);
                             System.out.println("ID deserializado de registro creado: " + record.getId());
-
+                            return record;
                         } catch (Exception e) {
                             System.err.println("Error al deserializar el registro creado: " + e.getMessage());
                             e.printStackTrace();

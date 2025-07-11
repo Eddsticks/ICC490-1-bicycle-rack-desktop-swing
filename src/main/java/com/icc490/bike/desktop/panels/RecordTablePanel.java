@@ -25,7 +25,7 @@ public class RecordTablePanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder("Registros de Bicicletas"));
 
         setupTable();
-        add(new JScrollPane(recordTable), BorderLayout.CENTER); // Envuelve la tabla en un JScrollPane
+        add(new JScrollPane(recordTable), BorderLayout.CENTER);
     }
 
     private void setupTable() {
@@ -38,16 +38,12 @@ public class RecordTablePanel extends JPanel {
         };
         recordTable = new JTable(tableModel);
         recordTable.setFillsViewportHeight(true);
-        recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        recordTable.getTableHeader().setReorderingAllowed(false);
-        recordTable.setAutoCreateRowSorter(true);
     }
 
     public void loadRecords() {
+        tableModel.setRowCount(0);
         apiClient.getAllRecords().thenAccept(records -> {
             SwingUtilities.invokeLater(() -> {
-                tableModel.setRowCount(0);
                 if (records != null && !records.isEmpty()) {
                     for (Object obj : records) {
                         if (obj instanceof Record) {
