@@ -64,11 +64,12 @@ public class RecordTablePanel extends JPanel {
         recordTable = new JTable(tableModel);
         recordTable.setFillsViewportHeight(true);
         recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         // Estilos de la tabla
         recordTable.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         recordTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         recordTable.getTableHeader().setBackground(AppColors.PRIMARY_BLUE);
-        recordTable.getTableHeader().setForeground(AppColors.WHITE_TEXT);
+        recordTable.getTableHeader().setForeground(Color.BLACK);
         recordTable.setRowHeight(25);
         recordTable.setGridColor(AppColors.LIGHT_GRAY_BORDER);
         recordTable.setBackground(Color.WHITE);

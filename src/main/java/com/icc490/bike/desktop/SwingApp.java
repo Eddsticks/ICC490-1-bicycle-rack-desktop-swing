@@ -40,7 +40,7 @@ public class SwingApp extends JFrame implements RecordCreationListener, RecordAc
 
     private void initUI() {
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(SECONDARY_BLUE);
+        getContentPane().setBackground(AppColors.LIGHT_GRAY_BORDER);
 
         createRecordPanel = new CreateRecordPanel(apiClient, this);
         add(createRecordPanel, BorderLayout.NORTH);
