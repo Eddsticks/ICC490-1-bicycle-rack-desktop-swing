@@ -104,7 +104,7 @@ public class Record {
                 ", bicycleDescription='" + bicycleDescription + '\'' +
                 ", checkIn=" + checkIn +
                 ", checkOut=" + checkOut +
-                ", rack=" + (rack != null ? rack.getId() : "null") + // Mostrar solo ID del rack
+                ", rack=" + rack +
                 ", hook=" + hook +
                 '}';
     }

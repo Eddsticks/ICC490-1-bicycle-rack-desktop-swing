@@ -68,8 +68,11 @@ public class ApiClient {
             return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
                     .thenApply(json -> {
+                        System.out.println("JSON Crudo recibido al crear registro: " + json);
                         try {
-                            return objectMapper.readValue(json, Record.class);
+                            Record record = objectMapper.readValue(json, Record.class);
+                            System.out.println("ID deserializado de registro creado: " + record.getId());
+
                         } catch (Exception e) {
                             System.err.println("Error al deserializar el registro creado: " + e.getMessage());
                             e.printStackTrace();
