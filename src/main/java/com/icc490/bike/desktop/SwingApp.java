@@ -3,12 +3,15 @@ package com.icc490.bike.desktop;
 import com.icc490.bike.desktop.panels.CreateRecordPanel;
 import com.icc490.bike.desktop.panels.CreateRecordPanel.RecordCreationListener;
 import com.icc490.bike.desktop.panels.RecordTablePanel;
+import com.icc490.bike.desktop.panels.CheckOutPanel;
+import com.icc490.bike.desktop.panels.CheckOutPanel.CheckOutListener;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SwingApp extends JFrame implements RecordCreationListener {
+public class SwingApp extends JFrame implements RecordCreationListener, CheckOutListener {
     private ApiClient apiClient;
+    private CheckOutPanel checkOutPanel;
 
     private static final Color PRIMARY_BLUE = new Color(50, 100, 160);
     private static final Color SECONDARY_BLUE = new Color(220, 230, 200);
@@ -46,6 +49,9 @@ public class SwingApp extends JFrame implements RecordCreationListener {
         recordTablePanel = new RecordTablePanel(apiClient);
         add(recordTablePanel, BorderLayout.CENTER);
 
+        checkOutPanel = new CheckOutPanel(apiClient, this);
+        add(checkOutPanel, BorderLayout.SOUTH);
+
     }
 
     private void loadRecords() {
@@ -54,6 +60,11 @@ public class SwingApp extends JFrame implements RecordCreationListener {
 
     @Override
     public void onRecordCreated() {
+        loadRecords();
+    }
+
+    @Override
+    public void onRecordCheckedOut() {
         loadRecords();
     }
 
