@@ -7,6 +7,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.icc490.bike.desktop.model.Record;
 import com.icc490.bike.desktop.model.RecordRequest;
 import com.icc490.bike.desktop.model.RecordPageResponse;
+import com.icc490.bike.desktop.exception.ApiErrorResponse;
+import com.icc490.bike.desktop.exception.ApiException;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -89,5 +91,40 @@ public class ApiClient {
             e.printStackTrace();
             return CompletableFuture.completedFuture(null);
         }
+    }
+
+    public CompletableFuture<Record> checkOutRecord(Long recordId) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/records/" + recordId + "/checkout"))
+                .method("PATCH",HttpRequest.BodyPublishers.noBody())
+                .header("Accept", "application/json")
+                .build();
+
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            return objectMapper.readValue(response.body(), Record.class);
+                        } catch (Exception e) {
+                            System.err.println("Error al deserializar el registro devuelto: " + e.getMessage());
+                            e.printStackTrace();
+                            return null;
+                        }
+                    } else {
+                        String errorBody = response.body();
+                        System.err.println("Error al devolver registro en la API: " + response.statusCode() + " - " + errorBody);
+                        try {
+                            ApiErrorResponse apiError = objectMapper.readValue(errorBody, ApiErrorResponse.class);
+                            throw new ApiException("Error de API al devolver registro: " + apiError.getError(), apiError);
+                        } catch (Exception ex) {
+                            throw new ApiException("Error desconocido al devolver registro: " + errorBody, null);
+                        }
+                    }
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error de conexión/inesperado al devolver registro: " + ex.getMessage());
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                });
     }
 }
