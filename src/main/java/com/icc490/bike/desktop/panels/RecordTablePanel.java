@@ -54,7 +54,7 @@ public class RecordTablePanel extends JPanel {
     }
 
     private void setupTable() {
-        String[] columnNames = {"ID","Gancho", "Matrícula", "Nombre Estudiante", "Descripción Bicicleta", "Check-in", "Check-out"};
+        String[] columnNames = {"ID","Gancho", "Matrícula", "Estudiante", "Bicicleta", "Check-in", "Check-out"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
