@@ -9,7 +9,7 @@ import com.icc490.bike.desktop.gui.utils.AppColors;
 import javax.swing.*;
 import java.awt.*;
 
-public class SwingApp extends JFrame implements RecordCreationListener, RecordActionListener {
+public class AdminDesktopApp extends JFrame implements RecordCreationListener, RecordActionListener {
     private ApiClient apiClient;
 
     private static final Color PRIMARY_BLUE = AppColors.PRIMARY_BLUE;
@@ -18,7 +18,7 @@ public class SwingApp extends JFrame implements RecordCreationListener, RecordAc
     private CreateRecordPanel createRecordPanel;
     private RecordTablePanel recordTablePanel;
 
-    public SwingApp() {
+    public AdminDesktopApp() {
         super("Gestión de Rack de Bicicletas UFRO");
         apiClient = new ApiClient();
 
@@ -76,6 +76,6 @@ public class SwingApp extends JFrame implements RecordCreationListener, RecordAc
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(SwingApp::new);
+        SwingUtilities.invokeLater(AdminDesktopApp::new);
     }
 }
