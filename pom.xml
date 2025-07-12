@@ -79,7 +79,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.icc490.bike.desktop.SwingApp</mainClass>
+                            <mainClass>com.icc490.bike.desktop.AdminDesktopApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -98,7 +98,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.icc490.bike.desktop.SwingApp</mainClass>
+                                    <mainClass>com.icc490.bike.desktop.AdminDesktopApp</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
