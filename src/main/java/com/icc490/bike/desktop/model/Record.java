@@ -1,6 +1,6 @@
 package com.icc490.bike.desktop.model;
 
-import java.time.Instant; // Necesario para Instant
+import java.time.Instant;
 
 public class Record {
     private Long id;
