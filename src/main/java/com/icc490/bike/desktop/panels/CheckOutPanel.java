@@ -51,7 +51,7 @@ public class CheckOutPanel extends JPanel {
         add(checkOutButton, gbc);
 
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(AppColors.LIGHT_GRAY_BORDER), "Realizar Check-out"));
-        setBackground(new Color(230, 220, 200));
+        setBackground(Color.WHITE);
     }
 
     private JLabel createLabel(String text) {
