@@ -1,11 +1,14 @@
 package com.icc490.bike.desktop;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import com.icc490.bike.desktop.model.Record;
 import com.icc490.bike.desktop.model.RecordRequest;
 import com.icc490.bike.desktop.model.RecordPageResponse;
+import com.icc490.bike.desktop.exception.ApiErrorResponse;
+import com.icc490.bike.desktop.exception.ApiException;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,17 +27,13 @@ public class ApiClient {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    /**
-     * Obtiene todos los registros de bicicletas de la API.
-     * Corresponde al endpoint GET /records
-     * @return Un CompletableFuture que contendrá una lista de objetos Record.
-     */
-    public CompletableFuture<List<Record>> getAllRecords() { // Cambiar List<?> a List<Record>
+    public CompletableFuture<List<Record>> getAllRecords() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/records"))
-                .GET() // Método HTTP GET
+                .GET()
                 .header("Accept", "application/json")
                 .build();
 
@@ -42,9 +41,8 @@ public class ApiClient {
                 .thenApply(HttpResponse::body)
                 .thenApply(json -> {
                     try {
-                        // Ahora deserializamos a RecordPageResponse
-                        RecordPageResponse response = objectMapper.readValue(json, RecordPageResponse.class);
-                        return response.getRecords(); // Y extraemos la lista de records
+                        RecordPageResponse pageResponse = objectMapper.readValue(json, RecordPageResponse.class);
+                        return pageResponse.getRecords();
                     } catch (Exception e) {
                         System.err.println("Error al deserializar la lista de registros: " + e.getMessage());
                         e.printStackTrace();
@@ -58,12 +56,6 @@ public class ApiClient {
                 });
     }
 
-    /**
-     * Crea un nuevo registro de bicicleta en la API.
-     * Corresponde al endpoint POST /records
-     * @param recordRequest El objeto RecordRequest con los datos del nuevo registro.
-     * @return Un CompletableFuture que contendrá el objeto Record creado.
-     */
     public CompletableFuture<Record> createRecord(RecordRequest recordRequest) {
         try {
             String requestBody = objectMapper.writeValueAsString(recordRequest);
@@ -78,8 +70,11 @@ public class ApiClient {
             return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
                     .thenApply(json -> {
+                        System.out.println("JSON Crudo recibido al crear registro: " + json);
                         try {
-                            return objectMapper.readValue(json, Record.class);
+                            Record record = objectMapper.readValue(json, Record.class);
+                            System.out.println("ID deserializado de registro creado: " + record.getId());
+                            return record;
                         } catch (Exception e) {
                             System.err.println("Error al deserializar el registro creado: " + e.getMessage());
                             e.printStackTrace();
@@ -96,5 +91,40 @@ public class ApiClient {
             e.printStackTrace();
             return CompletableFuture.completedFuture(null);
         }
+    }
+
+    public CompletableFuture<Record> checkOutRecord(Long recordId) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/records/" + recordId + "/checkout"))
+                .method("PATCH",HttpRequest.BodyPublishers.noBody())
+                .header("Accept", "application/json")
+                .build();
+
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            return objectMapper.readValue(response.body(), Record.class);
+                        } catch (Exception e) {
+                            System.err.println("Error al deserializar el registro devuelto: " + e.getMessage());
+                            e.printStackTrace();
+                            return null;
+                        }
+                    } else {
+                        String errorBody = response.body();
+                        System.err.println("Error al devolver registro en la API: " + response.statusCode() + " - " + errorBody);
+                        try {
+                            ApiErrorResponse apiError = objectMapper.readValue(errorBody, ApiErrorResponse.class);
+                            throw new ApiException("Error de API al devolver registro: " + apiError.getError(), apiError);
+                        } catch (Exception ex) {
+                            throw new ApiException("Error desconocido al devolver registro: " + errorBody, null);
+                        }
+                    }
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error de conexión/inesperado al devolver registro: " + ex.getMessage());
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                });
     }
 }

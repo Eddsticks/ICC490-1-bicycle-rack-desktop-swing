@@ -63,6 +63,7 @@ public class CreateRecordPanel extends JPanel {
 
     private void setupLayout() {
         setLayout(new GridBagLayout());
+        setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5); // Margen entre componentes
         gbc.fill = GridBagConstraints.HORIZONTAL;

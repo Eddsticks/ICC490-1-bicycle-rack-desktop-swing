@@ -2,6 +2,7 @@ package com.icc490.bike.desktop.panels;
 
 import com.icc490.bike.desktop.ApiClient;
 import com.icc490.bike.desktop.model.Record;
+import com.icc490.bike.desktop.gui.utils.AppColors;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,17 +20,18 @@ public class RecordTablePanel extends JPanel {
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
-    public RecordTablePanel(ApiClient apiClient) {
+    public RecordTablePanel(ApiClient apiClient, RecordActionListener listener) {
         this.apiClient = apiClient;
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createTitledBorder("Registros de Bicicletas"));
+        setBackground(AppColors.SECONDARY_BLUE);
 
         setupTable();
-        add(new JScrollPane(recordTable), BorderLayout.CENTER); // Envuelve la tabla en un JScrollPane
+        add(new JScrollPane(recordTable), BorderLayout.CENTER);
     }
 
     private void setupTable() {
-        String[] columnNames = {"ID", "ID Estudiante", "Nombre Estudiante", "Descripción Bicicleta", "Check-in", "Check-out"};
+        String[] columnNames = {"ID", "Gancho", "Matricula", "Estudiante", "Descripción Bicicleta", "Check-in", "Check-out"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -39,9 +41,6 @@ public class RecordTablePanel extends JPanel {
         recordTable = new JTable(tableModel);
         recordTable.setFillsViewportHeight(true);
         recordTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        recordTable.getTableHeader().setReorderingAllowed(false);
-        recordTable.setAutoCreateRowSorter(true);
     }
 
     public void loadRecords() {
@@ -57,6 +56,7 @@ public class RecordTablePanel extends JPanel {
 
                             tableModel.addRow(new Object[]{
                                     record.getId(),
+                                    record.getHook(),
                                     record.getStudentId(),
                                     record.getStudentName(),
                                     record.getBicycleDescription(),
@@ -78,5 +78,10 @@ public class RecordTablePanel extends JPanel {
             ex.printStackTrace();
             return null;
         });
+    }
+
+    public interface RecordActionListener {
+        void onRecordCheckedOut();
+
     }
 }

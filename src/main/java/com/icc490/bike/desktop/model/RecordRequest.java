@@ -7,7 +7,6 @@ public class RecordRequest {
     private Long rackId; // Nuevo campo
     private Long hook;   // Nuevo campo
 
-    // Constructor completo
     public RecordRequest(String studentId, String studentName, String bicycleDescription, Long rackId, Long hook) {
         this.studentId = studentId;
         this.studentName = studentName;
